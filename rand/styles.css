@@ -76,3 +76,28 @@ button:hover {
     opacity: 1; /* Start fully opaque */
     transition: opacity 1s; /* Transition for fading effect */
 }
+#loading-bar-container {
+    width: 50%; /* Set the container width to 50% of the screen */
+    height: 10px; /* Height of the loading bar */
+    background-color: #ccc; /* Background color */
+    border-radius: 4px; /* Rounded corners for the container */
+    overflow: hidden; /* Hide overflow */
+    margin: 10px auto; /* Center the container with auto margins */
+    position: relative; /* Position relative for absolute children */
+}
+
+#loading-bar {
+    width: 0%; /* Start with 0% width */
+    height: 100%; /* Full height of the container */
+    background-color: #28a745; /* Loading bar color */
+    transition: width 0.1s; /* Smooth transition for the width change */
+    position: absolute; /* Position absolute to fill the container */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+}
+
+#progress-text {
+    color: white; /* Text color */
+    text-align: center; /* Center the text */
+    margin-top: 5px; /* Space above the text */
+}

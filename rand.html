@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Coinflip Simulation</title>
     <link rel="stylesheet" href="rand/styles.css">
+    <link rel="icon" href="https://content.mycutegraphics.com/graphics/stpat/single-gold-coin.png" type="image/png">
 </head>
 <body>
 
@@ -16,6 +17,13 @@
     <button id="run">Run Tests</button>
 
     <div class="result" id="result"></div>
+    <img id="loading" src="https://media2.giphy.com/media/MOsuJf3qp3b1fQx2Iv/giphy.gif?cid=6c09b952c0fa2xjowko8yndnz46r94mtxa0aji35az8ozadz&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s" alt="Loading..." style="display: none; width: 100px; margin-top: 20px;">
+    
+    <!-- Loading bar -->
+    <div id="loading-bar-container" style="display: none;">
+        <div id="loading-bar"></div>
+    </div>
+    <div id="progress-text" style="color: white; margin-top: 5px;"></div> <!-- Progress text element -->
 </div>
 <script src="rand/script.js"></script>
 </body>

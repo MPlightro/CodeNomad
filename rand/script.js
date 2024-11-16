@@ -9,63 +9,63 @@ document.getElementById('run').addEventListener('click', function() {
     }
 
     let heads = 0;
-    const numbersBackground = document.querySelector('.background');
-    numbersBackground.innerHTML = ''; // Clear previous numbers
-    numbersBackground.style.opacity = 10; // Reset opacity when the button is pressed
     const resultDiv = document.getElementById('result');
-    resultDiv.innerText = ``;
+    resultDiv.innerText = '';
 
-    const batchSize = 100; // Number of numbers to generate at once
-    let currentTest = 0; // Counter for tests
-    let results = ''; // String to hold generated numbers
+    // Show loading GIF and loading bar
+    const loadingGif = document.getElementById('loading');
+    const loadingBarContainer = document.getElementById('loading-bar-container');
+    const loadingBar = document.getElementById('loading-bar');
+    const progressText = document.getElementById('progress-text'); // New progress text element
+    loadingGif.style.display = 'block';
+    loadingBarContainer.style.display = 'block';
 
-    const updateFontSize = () => {
-        const numberCount = numbersBackground.innerHTML.split(' ').length; // Count of elements in the background
-        const maxFontSize = 24; // Maximum font size
-        const minFontSize = 8; // Minimum font size
-        const newSize = Math.max(minFontSize, maxFontSize - Math.floor(numberCount / 100)); // Decrease size based on count
-        numbersBackground.style.fontSize = newSize + 'px'; // Update font size
+    // Simulate coin flips
+    const simulateCoinFlips = () => {
+        return new Promise((resolve) => {
+            let i = 0;
+            const batchSize = 1000; // Process 1000 flips at once
+            const updateInterval = 1000; // Update loading bar every 1000 flips
+
+            const flipCoins = () => {
+                let flipsProcessed = 0;
+
+                while (flipsProcessed < batchSize && i < tests) {
+                    const ans = Math.floor(Math.random() * options) + 1; // Random number between 1 and options
+                    if (ans === 1) {
+                        heads++;
+                    }
+                    flipsProcessed++;
+                    i++;
+                }
+
+                // Update loading bar width and progress text every 1000 tests
+                if (i % updateInterval === 0 || i === tests) {
+                    const progress = (i / tests) * 100;
+                    loadingBar.style.width = `${progress}%`;
+                    progressText.innerText = `${i} / ${tests} tests`; // Update progress text
+                }
+
+                if (i < tests) {
+                    requestAnimationFrame(flipCoins); // Continue flipping in the next frame
+                } else {
+                    resolve();
+                }
+            };
+            flipCoins(); // Start the flipping process
+        });
     };
 
-    let fadeInterval = null;
-
-    const fadeOutNumbers = () => {
-        if (fadeInterval) {
-            clearInterval(fadeInterval);
-        }
-        fadeInterval = setInterval(() => {
-            const currentOpacity = parseFloat(numbersBackground.style.opacity);
-            if (currentOpacity > 0) {
-                numbersBackground.style.opacity = (currentOpacity - 0.01).toString();
-            } else {
-                clearInterval(fadeInterval);
-            }
-        }, 10); // Fade out every 10ms
-    };
-
-    const interval = setInterval(() => {
-        const batchEnd = Math.min(currentTest + batchSize, tests);
-        for (let i = currentTest ; i < batchEnd ; i++) {
-            const ans = Math.floor(Math.random() * options) + 1; // Random number between 1 and options
-            if (ans === 1) {
-                heads++;
-            }
-            results += ans + ' ';
-        }
-        numbersBackground.innerHTML += results; // Append results to the background
-        updateFontSize(); // Update font size based on the number of results
-        currentTest = batchEnd;
-
-        if (currentTest >= tests * 0.3) { // Start fading when 90% of tests are done
-            numbersBackground.style.opacity = 1; // Reset opacity before fading
-            fadeOutNumbers();
-        }
-
-        if (currentTest >= tests) {
-            clearInterval(interval); // Stop the interval when all tests are done
-            const hp = (heads / tests) * 100;
-            resultDiv.innerText = `It is ${hp.toFixed(2)}% for heads`;
-            resultDiv.classList.add('visible');
-        }
-    }, 10); // Update every 10ms
+    simulateCoinFlips().then(() => {
+        const hp = (heads / tests) * 100;
+        resultDiv.innerText = `It is ${hp.toFixed(2)}% for heads`;
+        resultDiv.classList.add('visible');
+    
+        // Hide loading GIF and loading bar
+        loadingGif.style.display = 'none';
+        loadingBarContainer.style.display = 'none';
+    
+        // Clear progress text
+        progressText.innerText = ''; // Remove the progress text
+    });
 });
