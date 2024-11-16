@@ -1,0 +1,30 @@
+/* Navbar styles */
+header {
+    background-color: #6ab04c; /* Softer green for the header */
+    padding: 10px 0; /* Vertical padding */
+    text-align: center; /* Center align text */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    width: 100%;
+}
+
+nav ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+nav ul li {
+    display: inline; /* Display items inline */
+    margin: 0 15px; /* Space between items */
+}
+
+nav ul li a {
+    color: #fff; /* White text color */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold; /* Bold text */
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+nav ul li a:hover {
+    color: #fffa65; /* Change color on hover */
+}

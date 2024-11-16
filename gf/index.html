@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Girlfriend Proposal</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="https://static-00.iconduck.com/assets.00/red-heart-emoji-2048x1879-8wl1z711.png"type="image/png">
+    <link rel="stylesheet" href="styles.css"> <!-- Main styles -->
+    <link rel="stylesheet" href="navbar.css"> <!-- Navbar styles -->
+    <link rel="icon" href="https://static-00.iconduck.com/assets.00/red-heart-emoji-2048x1879-8wl1z711.png" type="image/png">
 </head>
 <body>
-    <div class="container">
-        <h1>Do you want to be my girlfriend?</h1>
-        <div class="buttons">
-            <button id="yesButton">Yes (Y)</button>
-            <button id="noButton">No (N)</button>
-        </div>
-        <p id="response"></p>
+<header>
+    <div id="navbar"></div> <!-- Placeholder for the navigation bar -->
+</header>
+<div class="container">
+    <h1>Do you want to be my girlfriend?</h1>
+    <div class="buttons">
+        <button id="yesButton">Yes (Y)</button>
+        <button id="noButton">No (N)</button>
     </div>
-    <script src="script.js"></script>
+    <p id="response"></p>
+</div>
+
+<script src="script.js"></script>
+<script src="../navbar/nav.js"></script> <!-- Include the navigation script -->
 </body>
 </html>
