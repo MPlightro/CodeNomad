@@ -25,6 +25,8 @@ document.getElementById("yesButton").onclick = function() {
 };
 
 // Function to handle the "No" button click
+let hiddenCount = 0; // Initialize hidden count
+
 function handleNoButtonClick(button) {
     // Teleport the button that was clicked
     teleportButton(button);
@@ -52,12 +54,16 @@ function handleNoButtonClick(button) {
 
     clickCount++; // Increment click count
 
-    if (clickCount >= 7) {
-        // Hide all buttons with the class 'noButton'
+    if (clickCount % 7 === 0) {
+        // Hide all buttons one by one with a delay
         const allNoButtons = document.querySelectorAll('.noButton');
-        allNoButtons.forEach((btn) => {
-            btn.style.display = 'none'; // Hide each button
-        });
+
+        // Loop through all buttons to hide them
+        for (let i = 0; i < allNoButtons.length; i++) {
+            setTimeout(() => {
+                allNoButtons[i].style.display = 'none'; // Hide the button
+            }, i * 5); // Delay each button by 0.2 seconds multiplied by the index
+        }
         document.getElementById("noButton").style.display = 'none';
     }
 }
