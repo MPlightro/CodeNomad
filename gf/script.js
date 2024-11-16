@@ -1,7 +1,3 @@
-document.getElementById("yesButton").onclick = function() {
-    document.getElementById("response").innerText = "I'm so happy you said yes!";
-};
-
 let clickCount = 0; // Initialize click count
 
 // Function to teleport a button
@@ -19,13 +15,25 @@ function teleportButton(button) {
     button.style.top = randomY + 'px';
 }
 
+// Function to teleport all "No" buttons including the original
+function teleportAllNoButtons() {
+    const allNoButtons = document.querySelectorAll('.noButton'); // Select all "No" buttons
+    allNoButtons.forEach(button => {
+        teleportButton(button); // Teleport each "No" button
+    });
+}
+
 // Function to handle the "Yes" button click
 document.getElementById("yesButton").onclick = function() {
     document.getElementById("response").innerText = "I'm so happy you said yes!";
+    // Do not teleport "No" buttons on "Yes" click
 };
 
 // Function to handle the "No" button click
-let hiddenCount = 0; // Initialize hidden count
+document.getElementById("noButton").onclick = function() {
+    handleNoButtonClick(this);
+    teleportAllNoButtons(); // Teleport all "No" buttons on click
+};
 
 function handleNoButtonClick(button) {
     // Teleport the button that was clicked
@@ -49,6 +57,7 @@ function handleNoButtonClick(button) {
         // Add click event listener to the new button
         newButton.onclick = function() {
             handleNoButtonClick(this);
+            teleportAllNoButtons(); // Teleport all "No" buttons on click
         };
     }
 
@@ -62,13 +71,10 @@ function handleNoButtonClick(button) {
         for (let i = 0; i < allNoButtons.length; i++) {
             setTimeout(() => {
                 allNoButtons[i].style.display = 'none'; // Hide the button
-            }, i * 5); // Delay each button by 0.2 seconds multiplied by the index
+            }, i * 5); // Delay each button by 5 milliseconds multiplied by the index
         }
+        
+        // Also hide the original "No" button
         document.getElementById("noButton").style.display = 'none';
     }
 }
-
-// Attach the click event listener to the original "No" button
-document.getElementById("noButton").onclick = function() {
-    handleNoButtonClick(this);
-};
