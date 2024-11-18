@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="navbar.css"> <!-- Navbar styles -->
+
+    <title>Roulette Game</title>
+</head>
+<body>
+    <header>
+        <div id="navbar"></div> <!-- Placeholder for the navigation bar -->
+    </header>
+
+    <div id="game">
+        <h1>Roulette Game</h1>
+        <div>
+            <p>Balance: <span id="balance">1000</span></p>
+            <input type="number" id="betAmount" placeholder="Enter bet amount">
+            <div>
+                <label><input type="radio" name="betType" class="betType" value="odd"> Odd</label>
+                <label><input type="radio" name="betType" class="betType" value="even"> Even</label>
+            </div>
+            <button id="placeBet">Place Bet</button>
+            <button id="resetGame">Reset Game</button>
+            <p id="result"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="../navbar/nav.js"></script> <!-- Include the navigation script -->
+</body>
+</html>
