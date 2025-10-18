@@ -1,4 +1,4 @@
-name: Build and deploy to GitHub Pages
+name: Deploy static site to GitHub Pages
 
 on:
   push:
@@ -9,16 +9,12 @@ permissions:
   contents: write
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
 
       - name: Create firebase-config.js from secrets
         run: |
@@ -35,19 +31,8 @@ jobs:
           };
           EOF
 
-      # optional: run build step if you have one (e.g. bundler)
-      - name: Install deps
-        run: npm ci
-        working-directory: .
-
-      - name: Build (if you have a build step)
-        run: npm run build
-        working-directory: .
-        # If you don't have a build step, skip this step.
-
-      # Publish to GitHub Pages (using peaceiris)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./ # adjust to ./public or ./dist if you build into that folder
+          publish_dir: ./
