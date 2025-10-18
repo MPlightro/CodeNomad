@@ -7,166 +7,197 @@ import {
   get,
   update,
   onValue,
-  remove,
+  remove
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Elements
-const joinBtn = document.getElementById("joinBtn");
-const createBtn = document.getElementById("createBtn");
-const startBtn = document.getElementById("startGameBtn");
-const nextBtn = document.getElementById("nextRoundBtn");
-const revealBtn = document.getElementById("revealImposterBtn");
-const endBtn = document.getElementById("endGameBtn");
-const gameArea = document.getElementById("gameArea");
-const joinArea = document.getElementById("joinGame");
-const playersList = document.getElementById("playersList");
+// DOM elements
+const authSection = document.getElementById("authSection");
+const adminSection = document.getElementById("adminSection");
+const gameSection = document.getElementById("gameSection");
+const roomDisplay = document.getElementById("roomDisplay");
+const statusEl = document.getElementById("status");
+const playerListEl = document.getElementById("playerList");
+const wordSection = document.getElementById("wordSection");
 const wordDisplay = document.getElementById("wordDisplay");
-const hintDisplay = document.getElementById("hint");
-const revealBox = document.getElementById("revealBox");
-const playerTitle = document.getElementById("playerTitle");
+const hintDisplay = document.getElementById("hintDisplay");
 const hostControls = document.getElementById("hostControls");
 
+// Buttons
+const createRoomBtn = document.getElementById("createRoomBtn");
+const joinRoomBtn = document.getElementById("joinRoomBtn");
+const loginAdminBtn = document.getElementById("loginAdminBtn");
+const startGameBtn = document.getElementById("startGameBtn");
+const nextRoundBtn = document.getElementById("nextRoundBtn");
+const revealImposterBtn = document.getElementById("revealImposterBtn");
+const endGameBtn = document.getElementById("endGameBtn");
+
+// State
 let username = "";
 let roomCode = "";
 let isHost = false;
-let myWord = "";
-let myHint = "";
+let currentImposter = null;
+let currentWord = "";
+let currentHint = "";
 
-// Join existing game
-joinBtn.onclick = async () => {
-  username = document.getElementById("username").value.trim();
-  roomCode = document.getElementById("roomCode").value.trim();
-  if (!username || !roomCode) return alert("Enter username and room code.");
-
-  const roomRef = ref(db, `games/${roomCode}/players/${username}`);
-  await set(roomRef, { name: username });
-
-  startGameListener();
-  joinArea.style.display = "none";
-  gameArea.style.display = "block";
+// --- Admin login ---
+loginAdminBtn.onclick = () => {
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
+  if (user === "MP" && pass === "Admin140811") {
+    alert("Admin logged in");
+    isHost = true;
+    hostControls.style.display = "block";
+    authSection.style.display = "none";
+    adminSection.style.display = "none";
+    gameSection.style.display = "block";
+  } else {
+    alert("Incorrect admin credentials");
+  }
 };
 
-// Create game
-createBtn.onclick = async () => {
+// --- Create / Join Room ---
+createRoomBtn.onclick = async () => {
   username = document.getElementById("username").value.trim();
+  if (!username) return alert("Enter your name first!");
+
   roomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
   isHost = true;
 
-  await set(ref(db, `games/${roomCode}`), {
+  await set(ref(db, "games/" + roomCode), {
     host: username,
-    players: { [username]: { name: username } },
     started: false,
+    reveal: false,
+    players: { [username]: true }
   });
 
-  startGameListener();
-  joinArea.style.display = "none";
-  gameArea.style.display = "block";
-  hostControls.style.display = "block";
-  playerTitle.textContent = `Room: ${roomCode} (Host)`;
+  openGame();
 };
 
-// Start game
-startBtn.onclick = async () => {
-  const playersSnap = await get(ref(db, `games/${roomCode}/players`));
-  if (!playersSnap.exists()) return alert("No players!");
+joinRoomBtn.onclick = async () => {
+  username = document.getElementById("username").value.trim();
+  roomCode = document.getElementById("roomCode").value.trim().toUpperCase();
+  if (!username || !roomCode) return alert("Enter both name and room code!");
 
-  const players = Object.keys(playersSnap.val());
-  const imposter = players[Math.floor(Math.random() * players.length)];
-
-  const wordsSnap = await get(ref(db, "words"));
-  let randomWord = { word: "Unknown", hint: "No data" };
-  if (wordsSnap.exists()) {
-    const all = Object.values(wordsSnap.val());
-    randomWord = all[Math.floor(Math.random() * all.length)];
-  }
-
-  await update(ref(db, `games/${roomCode}`), {
-    started: true,
-    imposter,
-    currentWord: randomWord.word,
-    currentHint: randomWord.hint,
-    revealed: false,
-  });
+  await set(ref(db, `games/${roomCode}/players/${username}`), true);
+  openGame();
 };
 
-// Next round
-nextBtn.onclick = async () => {
-  const playersSnap = await get(ref(db, `games/${roomCode}/players`));
-  if (!playersSnap.exists()) return;
+// --- Open Game UI ---
+function openGame() {
+  authSection.style.display = "none";
+  gameSection.style.display = "block";
+  roomDisplay.innerText = "Room: " + roomCode;
+  statusEl.innerText = isHost ? "You are the host" : "Waiting for host...";
 
-  const players = Object.keys(playersSnap.val());
-  const imposter = players[Math.floor(Math.random() * players.length)];
-
-  const wordsSnap = await get(ref(db, "words"));
-  let randomWord = { word: "Unknown", hint: "No data" };
-  if (wordsSnap.exists()) {
-    const all = Object.values(wordsSnap.val());
-    randomWord = all[Math.floor(Math.random() * all.length)];
-  }
-
-  await update(ref(db, `games/${roomCode}`), {
-    imposter,
-    currentWord: randomWord.word,
-    currentHint: randomWord.hint,
-    revealed: false,
+  // Update player list
+  const playersRef = ref(db, "games/" + roomCode + "/players");
+  onValue(playersRef, snapshot => {
+    const players = snapshot.val() || {};
+    playerListEl.innerHTML = "<h3>Players:</h3><ul>" +
+      Object.keys(players).map(p => `<li>${p}</li>`).join("") +
+      "</ul>";
   });
 
-  revealBox.textContent = ""; // clear previous reveal
-};
-
-// Reveal imposter & word for everyone
-revealBtn.onclick = async () => {
-  await update(ref(db, `games/${roomCode}`), { revealed: true });
-};
-
-// End game
-endBtn.onclick = async () => {
-  await remove(ref(db, `games/${roomCode}`));
-  alert("Game ended.");
-  location.reload();
-};
-
-// Listen for game updates
-function startGameListener() {
-  const gameRef = ref(db, `games/${roomCode}`);
-  onValue(gameRef, (snapshot) => {
+  // Listen for game updates
+  const gameRef = ref(db, "games/" + roomCode);
+  onValue(gameRef, snapshot => {
     const data = snapshot.val();
     if (!data) return;
 
-    // update player list
-    const players = data.players ? Object.keys(data.players) : [];
-    playersList.innerHTML = players.map(p => `<li>${p}</li>`).join("");
+    currentWord = data.currentWord || "";
+    currentHint = data.currentHint || "";
+    currentImposter = data.currentImposter || null;
 
-    // handle started state
-    if (data.started) {
-      const imposter = data.imposter;
-      const word = data.currentWord;
-      const hint = data.currentHint;
-      const revealed = data.revealed || false;
+    // Show word section
+    wordSection.style.display = data.started ? "block" : "none";
 
-      hintDisplay.textContent = "Hint: " + hint;
-
-      if (username === imposter) {
-        wordDisplay.textContent = "You are the Imposter!";
-      } else {
-        wordDisplay.textContent = "Word: " + word;
-      }
-
-      // Show revealed info for everyone
-      if (revealed) {
-        revealBox.textContent = `Imposter: ${imposter} | Word: ${word}`;
-      } else {
-        revealBox.textContent = "";
-      }
-
-      startBtn.style.display = "none";
+    // Show word/hint
+    if (username === currentImposter) {
+      wordDisplay.innerText = "❓ You are the Imposter!";
     } else {
-      wordDisplay.textContent = "";
-      hintDisplay.textContent = "";
-      revealBox.textContent = "";
+      wordDisplay.innerText = "Word: " + currentWord;
     }
+    hintDisplay.innerText = "Hint: " + currentHint;
+
+    // Show revealed info if needed
+    if (data.reveal) {
+      if (!document.getElementById("revealBox")) {
+        const revealBox = document.createElement("p");
+        revealBox.id = "revealBox";
+        revealBox.style.color = "#ff2626";
+        revealBox.style.fontWeight = "bold";
+        revealBox.style.marginTop = "10px";
+        revealBox.innerText = `Imposter: ${currentImposter} | Word: ${currentWord}`;
+        wordSection.appendChild(revealBox);
+      } else {
+        document.getElementById("revealBox").innerText = `Imposter: ${currentImposter} | Word: ${currentWord}`;
+      }
+    } else {
+      const revealBox = document.getElementById("revealBox");
+      if (revealBox) revealBox.remove();
+    }
+
+    startGameBtn.style.display = data.started ? "none" : "inline-block";
   });
+
+  if (isHost) hostControls.style.display = "block";
 }
+
+// --- Start Game ---
+startGameBtn.onclick = async () => {
+  const playersSnap = await get(ref(db, "games/" + roomCode + "/players"));
+  const players = Object.keys(playersSnap.val() || {});
+  const imposter = players[Math.floor(Math.random() * players.length)];
+
+  const wordsSnap = await get(ref(db, "words"));
+  let randomWord = { word: "Unknown", hint: "No words found" };
+  if (wordsSnap.exists()) {
+    const all = Object.values(wordsSnap.val());
+    randomWord = all[Math.floor(Math.random() * all.length)];
+  }
+
+  await update(ref(db, "games/" + roomCode), {
+    started: true,
+    currentWord: randomWord.word,
+    currentHint: randomWord.hint,
+    currentImposter: imposter,
+    reveal: false
+  });
+};
+
+// --- Next Round ---
+nextRoundBtn.onclick = async () => {
+  const playersSnap = await get(ref(db, `games/${roomCode}/players`));
+  const players = Object.keys(playersSnap.val() || {});
+  const imposter = players[Math.floor(Math.random() * players.length)];
+
+  const wordsSnap = await get(ref(db, "words"));
+  let randomWord = { word: "Unknown", hint: "No words found" };
+  if (wordsSnap.exists()) {
+    const all = Object.values(wordsSnap.val());
+    randomWord = all[Math.floor(Math.random() * all.length)];
+  }
+
+  await update(ref(db, "games/" + roomCode), {
+    currentWord: randomWord.word,
+    currentHint: randomWord.hint,
+    currentImposter: imposter,
+    reveal: false
+  });
+};
+
+// --- Reveal Imposter & Word ---
+revealImposterBtn.onclick = async () => {
+  await update(ref(db, "games/" + roomCode), { reveal: true });
+};
+
+// --- End Game ---
+endGameBtn.onclick = async () => {
+  await remove(ref(db, "games/" + roomCode));
+  alert("Game ended.");
+  window.location.reload();
+};
