@@ -1,0 +1,88 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e9f5f2; /* Soft light background */
+}
+
+header {
+    background: #6ab04c; /* Softer green for a friendly feel */
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 4px solid #4CAF50; /* Slightly darker green border */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px; /* Adjusted margin for a more compact look */
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+    color: #fffa65; /* Light yellow on hover for a cheerful touch */
+}
+
+main {
+    padding: 20px;
+    max-width: 800px; /* Center the content */
+    margin: auto;
+}
+
+section {
+    margin-bottom: 30px;
+    background: #ffffff; /* White background for sections */
+    padding: 20px;
+    border-radius: 12px; /* Rounder corners for a softer look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Softer shadow for depth */
+}
+
+h2 {
+    color: #333; /* Darker color for headings */
+    font-family: 'Comic Sans MS', cursive, sans-serif; /* Fun font for headings */
+}
+
+.project {
+    margin-bottom: 15px;
+}
+
+button {
+    background-color: #6ab04c; /* Softer green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 12px 20px; /* Increased padding for a friendlier button */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline-block for button */
+    font-size: 18px; /* Larger font */
+    margin: 4px 2px; /* Margin around buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 25px; /* Rounder corners for buttons */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+}
+
+button:hover {
+    background-color: #45a049; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+footer {
+    text-align: center;
+    padding: 15px 0;
+    background: #333;
+    color: #fff;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}

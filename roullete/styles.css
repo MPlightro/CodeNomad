@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    margin: 0; /* Remove default margin */
+    background-color: #f4f4f4;
+}
+header {
+    position: fixed; /* Fixes the navbar at the top */
+    top: 0; /* Aligns it to the top */
+    left: 0; /* Aligns it to the left */
+    right: 0; /* Stretches it to the right */
+    color: white; /* Text color */
+    padding: 20px; /* Increased padding for a larger navbar */
+    text-align: center; /* Center the text */
+    z-index: 10; /* Ensure it stays above the game container */
+    background-color: #6ab04c; /* Softer green for the header */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    width: 100%;
+}
+
+
+#game {
+    margin-top: 80px; /* Adjust top margin to create space for the navbar */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    max-width: 400px; /* Increase max width for larger screens */
+    margin: 20px; /* Add margin for spacing */
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+input[type="number"],
+input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(100% - 22px); /* Adjust width to account for padding */
+}
+
+button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add transform */
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+#result {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+#result.win {
+    color: #5cb85c; /* Green for wins */
+}
+
+#result.lose {
+    color: #d9534f; /* Red for losses */
+}
+
+#balance {
+    font-weight: bold;
+    color: #5cb85c; /* Bootstrap success color for balance */
+}
+
+#loadingIndicator {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #007BFF; /* Color for loading indicator */
+}

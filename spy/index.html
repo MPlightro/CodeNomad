@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imposter Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+
+    <h1>🕵️‍♂️ Imposter Game</h1>
+
+    <div id="authSection">
+      <input id="username" type="text" placeholder="Enter your name">
+      <input id="roomCode" type="text" placeholder="Room code">
+      <button id="createRoomBtn">Create Room</button>
+      <button id="joinRoomBtn">Join Room</button>
+    </div>
+
+    <div id="adminSection" style="display:none;">
+      <input id="adminUser" type="text" placeholder="Admin Username">
+      <input id="adminPass" type="password" placeholder="Password">
+      <button id="loginAdminBtn">Admin Login</button>
+    </div>
+
+    <div id="gameSection" style="display:none;">
+      <h2 id="roomDisplay"></h2>
+      <p id="status"></p>
+
+      <div id="playerList"></div>
+
+      <div id="wordSection" style="display:none;">
+        <h3 id="wordDisplay"></h3>
+        <p id="hintDisplay"></p>
+      </div>
+
+      <div id="hostControls" style="display:none;">
+        <button id="startGameBtn">Start Game</button>
+        <button id="nextRoundBtn">Next Round</button>
+        <button id="revealImposterBtn">Reveal Imposter</button>
+        <button id="endGameBtn">End Game</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
